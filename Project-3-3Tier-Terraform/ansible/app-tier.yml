@@ -1,0 +1,23 @@
+---
+- name: Configure Application Tier (PHP + submit.php)
+  hosts: app
+  become: true
+  tasks:
+    - name: Install PHP and required extensions
+      yum:
+        name:
+          - php
+          - php-mysqlnd
+          - httpd
+        state: present
+
+    - name: Deploy submit.php
+      template:
+        src: templates/submit.php.j2
+        dest: /var/www/html/submit.php
+
+    - name: Start and enable httpd
+      service:
+        name: httpd
+        state: started
+        enabled: true

@@ -1,0 +1,49 @@
+{
+  "tags": {
+    "Name": {
+      "tag_key": {
+        "@@assign": "Name"
+      },
+      "enforced_for": {
+        "@@assign": [
+          "ec2:instance"
+        ]
+      }
+    },
+    "emailID": {
+      "tag_key": {
+        "@@assign": "emailID"
+      },
+      "enforced_for": {
+        "@@assign": [
+          "ec2:instance"
+        ]
+      }
+    },
+    "phoneNo": {
+      "tag_key": {
+        "@@assign": "phoneNo"
+      },
+      "enforced_for": {
+        "@@assign": [
+          "ec2:instance"
+        ]
+      }
+    },
+    "Place": {
+      "tag_key": {
+        "@@assign": "Place"
+      },
+      "tag_value": {
+        "@@assign": [
+          "Pune"
+        ]
+      },
+      "enforced_for": {
+        "@@assign": [
+          "ec2:instance"
+        ]
+      }
+    }
+  }
+}

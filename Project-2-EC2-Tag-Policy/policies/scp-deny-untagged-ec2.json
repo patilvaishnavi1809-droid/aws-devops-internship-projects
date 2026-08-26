@@ -1,0 +1,49 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyRunInstancesWithoutRequiredTags",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:ec2:*:*:instance/*",
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRunInstancesWithoutEmail",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:ec2:*:*:instance/*",
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/emailID": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRunInstancesWithoutPhone",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:ec2:*:*:instance/*",
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/phoneNo": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRunInstancesWithoutPlace",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:ec2:*:*:instance/*",
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Place": "true"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+<?php
+$servername = "{{ db_endpoint | default('DB_ENDPOINT') }}";
+$username   = "{{ db_username | default('admin') }}";
+$password   = "{{ db_password | default('CHANGE_ME') }}";
+$dbname     = "{{ db_name | default('appdb') }}";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$name   = $conn->real_escape_string($_POST['name']);
+$email  = $conn->real_escape_string($_POST['email']);
+$course = $conn->real_escape_string($_POST['course']);
+
+$sql = "INSERT INTO registrations (name, email, course) VALUES ('$name', '$email', '$course')";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Registration successful!";
+} else {
+    echo "Error: " . $conn->error;
+}
+$conn->close();
+?>

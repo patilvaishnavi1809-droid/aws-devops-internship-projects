@@ -1,0 +1,8 @@
+{
+  "source": ["aws.ecr"],
+  "detail-type": ["ECR Image Action"],
+  "detail": {
+    "action-type": ["PUSH"],
+    "repository-name": ["docker-ecr-jenkins-lambda-demo"]
+  }
+}
