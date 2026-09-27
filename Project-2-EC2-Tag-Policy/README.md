@@ -1,106 +1,66 @@
-# Project 2: EC2 Instance Launch with Enforced Tagging Policy
+# Project 2 - EC2 Instance Launch Using Tag Policy
 
-## 📌 Objective
-Enforce mandatory tagging on every EC2 instance using **AWS Organizations Tag
-Policies** (or an equivalent **Service Control Policy**), and demonstrate that
-instances cannot be launched unless the required tags are supplied.
+## Project Overview
 
-## 🏷 Required Tags
-| Tag Key   | Example Value       |
-|-----------|----------------------|
-| Name      | Rahul                |
-| emailID   | rahul@example.com    |
-| phoneNo   | 9999999999           |
-| Place     | Pune                 |
+This project demonstrates enforcing mandatory tags for Amazon EC2 instances using an AWS policy-based approach.
 
-## 🛠 Tech Stack
-`AWS Organizations` · `Tag Policies` · `Service Control Policies (SCP)` · `Amazon EC2` · `AWS CLI`
+The project verifies EC2 instance launch behavior when required tags are missing and when the required tags are provided.
 
----
+## Objective
 
-## 🚀 Step-by-Step Guide
+- Configure mandatory EC2 tagging.
+- Define the required tag policy.
+- Attempt to launch an EC2 instance without the required tag.
+- Verify the rejection of the EC2 launch request.
+- Launch an EC2 instance with the required tag.
+- Verify successful EC2 instance creation.
 
-### Step 1: Define the Tag Policy
-1. Open [`policies/tag-policy.json`](policies/tag-policy.json) — this defines the
-   four mandatory tag keys (`Name`, `emailID`, `phoneNo`, `Place`).
-2. In **AWS Organizations Console → Policies → Tag policies**, create a new policy
-   and paste the JSON in.
-3. Attach the policy to the target Organizational Unit (OU) or account.
 
-**✅ Deliverable:** Screenshot of the tag policy created in AWS Organizations.
-📸 `screenshots/step1-tag-policy-created.png`
+## Required Tag
 
----
+| Key | Value |
+|---|---|
+| Environment | Test |
 
-### Step 2: Enforce with a Service Control Policy (if Tag Policies alone aren't enough)
-Tag Policies only **report** non-compliance by default — to actually **block**
-launches, attach the SCP in [`policies/scp-deny-untagged-ec2.json`](policies/scp-deny-untagged-ec2.json)
-to the same OU/account. It denies `ec2:RunInstances` unless all four tags are
-present on the request.
+## Project Screenshots
 
-**✅ Deliverable:** Screenshot of the SCP attached in the Organizations console.
-📸 `screenshots/step2-scp-attached.png`
+### 1. AWS Console Region
 
----
+![AWS Console Region](screenshots/aws-console-region-project%202.png)
 
-### Step 3: Launch an EC2 Instance WITH Required Tags (should succeed)
-Run [`scripts/launch_ec2_with_tags.sh`](scripts/launch_ec2_with_tags.sh):
-```bash
-./scripts/launch_ec2_with_tags.sh
-```
-This should launch successfully because `Name`, `emailID`, `phoneNo`, and `Place`
-are all supplied in `--tag-specifications`.
+### 2. Required Tags
 
-**✅ Deliverable:** Screenshot / CLI output of the successful instance launch.
-📸 `screenshots/step3-launch-success.png`
+![Required Tags](screenshots/required-tags-project%202.png)
 
----
+### 3. Tag Policy JSON
 
-### Step 4: Launch an EC2 Instance WITHOUT Tags (should fail)
-Run [`scripts/launch_ec2_without_tags.sh`](scripts/launch_ec2_without_tags.sh):
-```bash
-./scripts/launch_ec2_without_tags.sh
-```
-Expected result — the call is rejected with an `UnauthorizedOperation` /
-`Encoded authorization failure message` error, proving enforcement works.
+![Tag Policy JSON](screenshots/tag-policy-json-project%202.png)
 
-**✅ Deliverable:** Screenshot / CLI output of the rejected launch attempt.
-📸 `screenshots/step4-launch-failure.png`
+### 4. Valid Tag Policy JSON
 
----
+![Valid Tag Policy JSON](screenshots/tag-policy-valid-json-project%202.png)
 
-### Step 5: Document Behavior & Reasoning
-Summarize (in this README or a short report) *why* the second launch failed —
-i.e., the SCP's `Null` condition evaluates to `true` when a required tag key is
-absent from the request, triggering an explicit `Deny`.
+### 5. EC2 Tags Policy Created
 
-**✅ Deliverable:** Written explanation (see [Security Considerations](#-how-enforcement-works) below).
+![EC2 Tags Policy Created](screenshots/policy-ec2-tags-created-project%202.png)
 
----
+### 6. Tag Policies Enabled
 
-## 📂 Repository Structure
-```
-Project-2-EC2-Tag-Policy/
-├── README.md
-├── policies/
-│   ├── tag-policy.json
-│   └── scp-deny-untagged-ec2.json
-├── scripts/
-│   ├── launch_ec2_with_tags.sh
-│   └── launch_ec2_without_tags.sh
-└── screenshots/
-```
+![Tag Policies Enabled](screenshots/tag-policies-enabeld-project%202%20.png)
 
-## 🔐 How Enforcement Works
-The SCP statements use the `Null` IAM condition operator on
-`aws:RequestTag/<key>`. When a tag key is **not** present in the `RunInstances`
-request, `aws:RequestTag/<key>` is null, the condition evaluates to `true`, and
-the matching `Deny` statement blocks the call — regardless of any `Allow`
-elsewhere, since SCPs are guardrails that cap the maximum available permissions.
+### 7. Launch EC2 Without Required Tags
 
-## ✅ Deliverables Checklist
-- [ ] Description of the tag policy
-- [ ] Screenshot of tag policy creation
-- [ ] Screenshot of instance launch success with tags
-- [ ] Screenshot of instance launch failure without tags
-- [ ] Step-by-step guide for applying/enforcing tags (this README)
+![Launch EC2 Without Tags](screenshots/ec2-launch-instance-without-tags-project%202.png)
+
+### 8. EC2 Launch Rejected Without Required Tags
+
+![EC2 Launch Rejected](screenshots/ec2-without-tags-denied-project%202.png)
+
+The EC2 launch request was rejected when the required tag was not provided.
+
+### 9. EC2 Launch With Required Tags
+
+![EC2 Launch With Required Tags](screenshots/ec2-with-required-tags-success-project%202.png)
+
+The EC2 instance launch was successful after the required tag was provided.
+
