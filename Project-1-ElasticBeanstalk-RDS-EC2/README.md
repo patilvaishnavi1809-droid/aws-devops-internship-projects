@@ -30,6 +30,7 @@ Amazon RDS MySQL
 EC2 Instance
         |
 MySQL Client
+```
 
 ---
 
