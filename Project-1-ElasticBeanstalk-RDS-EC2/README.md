@@ -1,108 +1,114 @@
-# Project 1: AWS Elastic Beanstalk with RDS, Accessed from EC2
+# AWS Elastic Beanstalk + RDS MySQL Project
 
-## 📌 Objective
-Deploy an application environment using **AWS Elastic Beanstalk**, provision an
-integrated **Amazon RDS** database, and securely access that RDS instance from
-a separate **EC2** instance in the same VPC.
+## Project Overview
 
-## 🛠 Tech Stack
-`AWS Elastic Beanstalk` · `Amazon RDS (MySQL)` · `Amazon EC2` · `VPC / Security Groups`
+This project demonstrates deploying a Node.js web application using AWS Elastic Beanstalk with Amazon RDS MySQL.
 
----
+The project also includes:
 
-## 🚀 Step-by-Step Guide
+- Amazon EC2
+- Amazon RDS MySQL
+- AWS Systems Manager Parameter Store
+- IAM Role
+- Amazon CloudWatch
+- EC2-to-RDS connectivity
+- Database read/write testing
+- Secure credential management
 
-### Step 1: Create the Elastic Beanstalk Environment
-1. Go to **AWS Console → Elastic Beanstalk → Create Application**.
-2. Choose platform **Python** and upload/deploy the app in [`sample-app/`](sample-app/).
-   - `application.py` — sample Flask app (Beanstalk's default WSGI entry point).
-   - `requirements.txt` — Python dependencies.
-   - `.ebextensions/01_packages.config` — Beanstalk config file.
-3. Under **Configure more options → Database**, select:
-   - Engine: `mysql`
-   - Instance class: `db.t3.micro` (free-tier friendly)
-   - Make sure it deploys **inside the same VPC** as the environment.
-4. Launch the environment and wait for the health status to turn **Green**.
+## Architecture
 
-**✅ Deliverable:** Screenshot of the Beanstalk environment dashboard showing "Health: Ok".
-📸 `screenshots/step1-eb-environment.png`
-
----
-
-### Step 2: Verify the RDS Instance Created by Beanstalk
-1. Go to **RDS Console → Databases** and locate the DB instance Beanstalk created
-   (name usually starts with `aweb...` or `ebdb`).
-2. Note the **Endpoint** and **Port** — you'll need these in Step 4.
-3. Under Beanstalk: **Configuration → Database** also shows these same values as
-   environment variables (`RDS_HOSTNAME`, `RDS_PORT`, `RDS_DB_NAME`, `RDS_USERNAME`).
-
-**✅ Deliverable:** Screenshot of the RDS instance detail page.
-📸 `screenshots/step2-rds-created.png`
+```text
+AWS Elastic Beanstalk
+        |
+        v
+Node.js Web Application
+        |
+        v
+Amazon RDS MySQL
+        ^
+        |
+EC2 Instance
+        |
+MySQL Client
 
 ---
 
-### Step 3: Configure Security Groups
-1. Open the **RDS security group** (auto-created by Beanstalk).
-2. Add an inbound rule:
-   - Type: `MySQL/Aurora` (port 3306)
-   - Source: the **security group of your standalone EC2 instance** (Step 4)
-     — not `0.0.0.0/0`, to keep the DB private.
-3. Keep the existing rule that allows the Beanstalk environment itself to connect.
+# Project Screenshots
 
-**✅ Deliverable:** Screenshot of the RDS security group inbound rules.
-📸 `screenshots/step3-security-group.png`
+## 1. Create Application in Elastic Beanstalk
+
+![Create Application](screenshots/Application-Create%20in%20EB%20Project-1.png)
+
+## 2. Elastic Beanstalk Environment Running
+
+![Elastic Beanstalk Environment Running](screenshots/EB-Env-Running-Project%201%20.png)
+
+## 3. EC2 SSM IAM Role
+
+![EC2 SSM IAM Role](screenshots/EC2-SSM-IAM-ROLE-Project%201.png)
+
+## 4. Elastic Beanstalk Environment Setup
+
+![Elastic Beanstalk Environment Setup](screenshots/Elastic-Beanstalk-ENV-Setup%20Project-1.png)
+
+## 5. MySQL Client Installation
+
+![MySQL Client Installation](screenshots/MYSQL-Client%20installed-Project%201.png)
+
+## 6. RDS Creation
+
+![RDS Creation](screenshots/RDS-Creating-project%201%20.png)
+
+## 7. RDS VPC Verification
+
+![RDS VPC Verification](screenshots/RDS-VPC%20Verification-Project%201.png)
+
+## 8. RDS Read and Write Test
+
+![RDS Read Write Test](screenshots/RDS-read-write-test-Project%201.png)
+
+## 9. SSM Parameter Store
+
+![SSM Parameter Store](screenshots/SSM-parameters-from-Project%201.png)
+
+## 10. Sample Web Application
+
+![Sample Web Application](screenshots/Sampel-Web-application-PROJECT%201.png)
+
+## 11. CloudWatch RDS CPU Monitoring
+
+![CloudWatch RDS CPU Monitoring](screenshots/cloudwatch-rds-cpu-Project%201.png)
+
+## 12. Elastic Beanstalk, RDS and EC2 Running
+
+![Elastic Beanstalk RDS EC2 Running](screenshots/eb-rds-ec2%20running-Project%201%20.png)
+
+## 13. EC2 Connected to RDS MySQL
+
+![EC2 RDS MySQL Connected](screenshots/ec2-rds-mysql%20connected-project%201%20.png)
+
+## 14. Parameter Store Credentials
+
+![Parameter Store Credentials](screenshots/parameter-store-credentials-Project%201.png)
+
+## 15. RDS Database Verification
+
+![RDS Database Verification](screenshots/rds-db%20verification-project%201.png)
+
+## 16. RDS Secure Test Script
+
+![RDS Secure Test Script](screenshots/rds-secure-test-script-project%201.png)
 
 ---
 
-### Step 4: Launch a Separate EC2 Instance & Connect to RDS
-1. Launch a new EC2 instance (Amazon Linux 2023) in the **same VPC** as Beanstalk.
-2. SSH into it:
-   ```bash
-   ssh -i your-key.pem ec2-user@<EC2_PUBLIC_IP>
-   ```
-3. Run [`scripts/connect_rds_from_ec2.sh`](scripts/connect_rds_from_ec2.sh) to install
-   the MySQL client and connect using the RDS endpoint from Step 2.
-4. Run [`scripts/test_read_write.sql`](scripts/test_read_write.sql) to confirm read/write
-   access works end-to-end.
+# Key Learning Outcomes
 
-**✅ Deliverable:** Terminal screenshot showing a successful `mysql>` connection and
-query output.
-📸 `screenshots/step4-ec2-to-rds.png`
-
----
-
-### Step 5 (Optional Enhancements)
-- Store RDS credentials in **AWS Secrets Manager** instead of plain environment variables.
-- Add a CloudWatch alarm on `DatabaseConnections` or `CPUUtilization`.
-
-**✅ Deliverable (if completed):** Screenshot of Secrets Manager secret / CloudWatch alarm.
-📸 `screenshots/step5-optional-enhancements.png`
-
----
-
-## 📂 Repository Structure
-```
-Project-1-ElasticBeanstalk-RDS-EC2/
-├── README.md
-├── sample-app/
-│   ├── application.py
-│   ├── requirements.txt
-│   └── .ebextensions/01_packages.config
-├── scripts/
-│   ├── connect_rds_from_ec2.sh
-│   └── test_read_write.sql
-└── screenshots/
-```
-
-## 🔐 Security Considerations
-- RDS is **never** exposed publicly — only reachable from the Beanstalk environment
-  and the specific EC2 instance's security group.
-- Credentials are pulled from Beanstalk environment variables rather than hard-coded.
-- Recommend rotating DB credentials via Secrets Manager for production use.
-
-## ✅ Deliverables Checklist
-- [ ] Deployed Elastic Beanstalk environment with application
-- [ ] Screenshot of RDS database created via Beanstalk
-- [ ] Commands used to access RDS from EC2 (see `scripts/`)
-- [ ] (Optional) Test script for database operations
-- [ ] Architecture diagram, setup guide, security notes, screenshots (this README)
+- Deployed a Node.js application using AWS Elastic Beanstalk.
+- Integrated Amazon RDS MySQL with the application.
+- Configured EC2 connectivity to RDS.
+- Installed and used the MySQL client.
+- Tested database read/write operations.
+- Stored database credentials using AWS Systems Manager Parameter Store.
+- Configured IAM roles.
+- Monitored RDS using Amazon CloudWatch.
+- Verified communication between EC2 and RDS.
