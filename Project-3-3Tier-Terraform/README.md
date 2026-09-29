@@ -1,137 +1,84 @@
-# Project 3: 3-Tier Infrastructure Deployment Using Terraform Modules
+## 📸 Project Screenshots
+### 1. VPC Creation
+![VPC Creation](./screenshots/VPC-CREATE-PROJECT%203%20.png)
 
-## 📌 Objective
-Design and deploy a complete 3-tier web application architecture on AWS —
-**Web (public) → App (private) → Database (private)** — using reusable
-Terraform modules and Ansible for configuration automation.
+### 2. VPC Resource Map
+![VPC Resource Map](./screenshots/vpc-resource-map%201-project%203.png)
 
-## 🏗 Architecture
-![Architecture Diagram](diagrams/architecture.svg)
+### 3. Subnets Created
+![Subnets Created](./screenshots/4%20subnet%20created-project%203.png)
 
-## 🛠 Tech Stack
-`Terraform` · `Ansible` · `AWS VPC` · `EC2` · `RDS (MySQL)` · `Nginx` · `PHP`
+### 4. Internet Gateway Attached
+![Internet Gateway](./screenshots/igw-attached%20to-vpc-%20project%203.png)
 
----
+### 5. Public Route Table
+![Public Route Table](./screenshots/public-rt-tabel-project%203.png)
 
-## 🚀 Step-by-Step Guide
+### 6. Public Subnet Public IP
+![Public Subnet Public IP](./screenshots/public-subnet-public-ip-project%203.png)
 
-### Step 1: Networking (VPC Setup)
-The [`terraform/modules/vpc`](terraform/modules/vpc) module creates:
-- A custom VPC (`10.0.0.0/16`)
-- 2 public + 2 private subnets across 2 Availability Zones
-- Internet Gateway (public subnet) & NAT Gateway (private subnet)
-- Route tables with correct associations
-- Three security groups: `web-sg`, `app-sg`, `db-sg` (each only allows traffic
-  from the tier in front of it)
+### 7. NAT Gateway
+![NAT Gateway](./screenshots/nat-gateway-create-project%203.png)
 
-```bash
-cd terraform
-terraform init
-terraform plan
-terraform apply
-```
+### 8. Private Route Table
+![Private Route Table](./screenshots/devops-private-rt-created-project%203.png)
 
-**✅ Deliverable:** Screenshot of the VPC, subnets, and route tables in the AWS Console.
-📸 `screenshots/step1-vpc.png`
+### 9. Web Server Running
+![Web Server Running](./screenshots/devops-web-server-running-project%203.png)
 
----
+### 10. EC2 User Data - Nginx
+![EC2 User Data Nginx](./screenshots/ec2-user-data-nginx-project%203.png)
 
-### Step 2: Web Tier (Public Subnet)
-The [`terraform/modules/ec2`](terraform/modules/ec2) module launches the web EC2
-instance in the public subnet. Configuration is applied via Ansible:
-```bash
-cd ansible
-ansible-playbook -i inventory.ini web-tier.yml
-```
-This installs **Nginx** and deploys [`templates/registration.html.j2`](ansible/templates/registration.html.j2)
-— a basic HTML registration form (Name, Email, Course).
+### 11. Nginx Registration Form
+![Nginx Registration Form](./screenshots/nginx-registration-form-project%203.png)
 
-**✅ Deliverable:** Screenshot of the registration form loading in a browser via the
-web tier's public IP.
-📸 `screenshots/step2-web-tier.png`
+### 12. Private App EC2
+![Private App EC2](./screenshots/app-ec2-private-running-project%203.png)
 
----
+### 13. PHP and Nginx Application
+![PHP Nginx Application](./screenshots/app-server-php-nginx-project%203%20.png)
 
-### Step 3: Application Tier (Private Subnet)
-```bash
-ansible-playbook -i inventory.ini app-tier.yml
-```
-This installs PHP + Apache and deploys [`templates/submit.php.j2`](ansible/templates/submit.php.j2),
-which receives the form POST from the web tier and inserts the data into RDS.
+### 14. Security Group
+![Security Group](./screenshots/create-security%20group-project%203.png)
 
-**✅ Deliverable:** Screenshot of the app tier EC2 instance running (via SSH ProxyJump
-through the web tier, since it has no public IP).
-📸 `screenshots/step3-app-tier.png`
+### 15. RDS Subnet Group
+![RDS Subnet Group](./screenshots/RDS-subnet-group-project%203.png)
 
----
+### 16. RDS Security Group
+![RDS Security Group](./screenshots/rds-security-group-project%203.png)
 
-### Step 4: Database Tier (Private Subnet)
-The [`terraform/modules/rds`](terraform/modules/rds) module provisions an RDS MySQL
-instance in a **DB subnet group** made from the private subnets, with a security
-group that only allows inbound `3306` from the app tier's security group.
-Run [`ansible/db_schema.sql`](ansible/db_schema.sql) against it once to create the
-`registrations` table:
-```bash
-mysql -h <rds_endpoint> -u admin -p appdb < ansible/db_schema.sql
-```
+### 17. RDS Instance Available
+![RDS Instance Available](./screenshots/rds-instance-availabel-project%203.png)
 
-**✅ Deliverable:** Screenshot of the RDS instance + its subnet group / security group.
-📸 `screenshots/step4-rds.png`
+### 18. Application to RDS Connection
+![Application to RDS Connection](./screenshots/app-to-rds-connection-project%203.png)
 
----
+### 19. Registration Database Tables
+![Registration Database Tables](./screenshots/registration-database-tabels-Project%203.png)
 
-### Step 5: End-to-End Test
-1. Open the web tier's public IP in a browser.
-2. Submit the registration form.
-3. Confirm the row appears in the `registrations` table on RDS.
+### 20. Terraform Project Structure
+![Terraform Project Structure](./screenshots/terraform-project-folder-project%203.png)
 
-**✅ Deliverable:** Screenshot of a successful form submission + the matching row in MySQL.
-📸 `screenshots/step5-end-to-end-test.png`
+### 21. Terraform VPC Module
+![Terraform VPC Module](./screenshots/terraform-vpc-folder-project%203.png)
 
----
+### 22. Terraform Validation
+![Terraform Validation](./screenshots/terraform-validation-success-project%203.png)
 
-## 📂 Repository Structure
-```
-Project-3-3Tier-Terraform/
-├── README.md
-├── diagrams/
-│   └── architecture.svg
-├── terraform/
-│   ├── main.tf / variables.tf / outputs.tf / terraform.tfvars.example
-│   └── modules/
-│       ├── vpc/
-│       ├── ec2/
-│       └── rds/
-├── ansible/
-│   ├── inventory.ini
-│   ├── web-tier.yml
-│   ├── app-tier.yml
-│   ├── db_schema.sql
-│   └── templates/
-│       ├── registration.html.j2
-│       ├── submit.php.j2
-│       └── web_userdata.sh
-└── screenshots/
-```
+### 23. Terraform Plan
+![Terraform Plan](./screenshots/terraform-plan-success-project%203.png)
 
-## 🔧 How to Deploy
-1. `cd terraform && cp terraform.tfvars.example terraform.tfvars` and fill in your
-   `key_name` and a strong `db_password`.
-2. `terraform init && terraform apply`
-3. Update `ansible/inventory.ini` with the real public/private IPs from the
-   Terraform output.
-4. Run the two playbooks (`web-tier.yml`, `app-tier.yml`).
-5. Load the site and test the registration form end to end.
+### 24. Terraform Automation Code
+![Terraform Automation Code](./screenshots/terraform-automation-ssm-code-project%203.png)
 
-## 🔐 Security Considerations
-- App and DB tiers have **no public IPs** — only reachable through the VPC.
-- Security groups are chained (`web → app → db`), not open to `0.0.0.0/0`.
-- DB credentials should be moved to Secrets Manager for anything beyond a lab exercise.
+### 25. Terraform Automation Plan
+![Terraform Automation Plan](./screenshots/terraform-automation-plan-project%203.png)
 
-## ✅ Deliverables Checklist
-- [ ] Terraform code organized using modules (this repo)
-- [ ] Ansible playbooks / provisioners (this repo)
-- [ ] Architecture diagram (`diagrams/architecture.svg`)
-- [ ] Code pushed to GitHub, link shared in documentation
-- [ ] Screenshots / demo video of the working setup
-- [ ] README with prerequisites, deploy steps, and how the system works (this file)
+### 26. Web SSM Automation Success
+![Web SSM Automation](./screenshots/terraform-ssm-web-automation-success-project%203.png)
+
+### 27. App SSM Automation Success
+![App SSM Automation](./screenshots/terraform-app-ssm-automation-success-project%203.png)
+
+### 28. Final 3-Tier Application
+![Final 3-Tier Application](./screenshots/3tier-registration%20page-project%203.png)
