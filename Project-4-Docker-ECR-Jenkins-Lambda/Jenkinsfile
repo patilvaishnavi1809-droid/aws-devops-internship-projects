@@ -2,70 +2,85 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCOUNT_ID = credentials('aws-account-id')
-        AWS_REGION     = 'ap-south-1'
-        ECR_REPO       = 'docker-ecr-jenkins-lambda-demo'
-        IMAGE_TAG      = "${env.BUILD_NUMBER}-${env.GIT_COMMIT.take(7)}"
-        ECR_URI        = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO}"
+        AWS_REGION = 'us-east-1'
+        AWS_ACCOUNT_ID = '613591981591'
+        ECR_REPO = 'myapp'
+        ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/<your-username>/<your-repo>.git'
+                checkout scm
+            }
+        }
+
+        stage('AWS Identity Check') {
+            steps {
+                sh '''
+                    aws sts get-caller-identity
+                '''
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${ECR_REPO}:${IMAGE_TAG} ."
-            }
-        }
-
-        stage('Login to ECR') {
-            steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-jenkins-creds']]) {
-                    sh """
-                        aws ecr get-login-password --region ${AWS_REGION} | \
-                        docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-                    """
+                dir('Project-4-Docker-ECR-Jenkins-Lambda') {
+                    sh '''
+                        docker build -t ${ECR_REPO}:${IMAGE_TAG} .
+                    '''
                 }
             }
         }
 
-        stage('Tag & Push to ECR') {
+        stage('Login to Amazon ECR') {
             steps {
-                sh """
-                    docker tag ${ECR_REPO}:${IMAGE_TAG} ${ECR_URI}:${IMAGE_TAG}
-                    docker tag ${ECR_REPO}:${IMAGE_TAG} ${ECR_URI}:latest
-                    docker push ${ECR_URI}:${IMAGE_TAG}
-                    docker push ${ECR_URI}:latest
-                """
+                sh '''
+                    aws ecr get-login-password --region ${AWS_REGION} | \
+                    docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                '''
             }
         }
 
-        stage('Trigger Lambda (post-deploy)') {
+        stage('Tag Docker Image') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-jenkins-creds']]) {
-                    sh """
-                        aws lambda invoke \
-                          --function-name ecr-push-notifier \
-                          --payload '{"image_tag": "${IMAGE_TAG}", "repository": "${ECR_REPO}"}' \
-                          --cli-binary-format raw-in-base64-out \
-                          response.json
-                        cat response.json
-                    """
-                }
+                sh '''
+                    docker tag ${ECR_REPO}:${IMAGE_TAG} \
+                    ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
+                '''
+            }
+        }
+
+        stage('Push Image to ECR') {
+            steps {
+                sh '''
+                    docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
+                '''
+            }
+        }
+
+        stage('Verify ECR Image') {
+            steps {
+                sh '''
+                    aws ecr describe-images \
+                    --repository-name ${ECR_REPO} \
+                    --image-ids imageTag=${IMAGE_TAG} \
+                    --region ${AWS_REGION}
+                '''
             }
         }
     }
 
     post {
         success {
-            echo "✅ Image ${ECR_URI}:${IMAGE_TAG} pushed and Lambda notified."
+            echo "Docker image successfully pushed to Amazon ECR!"
+            echo "Image: ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}"
         }
+
         failure {
-            echo "❌ Pipeline failed - check logs above."
+            echo "Pipeline failed. Check the console output."
         }
     }
 }
