@@ -134,3 +134,55 @@ Project-4-Docker-ECR-Jenkins-Lambda/
 - [ ] Code pushed to GitHub, link shared in documentation
 - [ ] README with architecture, deployment steps, and component explanation (this file)
 - [ ] Sample logs / screenshots of image push and Lambda execution
+- [ ] ## 📸 Project Screenshots
+
+### 1. Flask Application Running
+![Flask Application](screenshots/01-flask-application.png)
+
+### 2. Docker Image Created
+![Docker Images](screenshots/02-docker-images.png)
+
+### 3. Amazon ECR Repository Created
+![ECR Repository](screenshots/03-create-ecr-repository.png)
+
+### 4. Docker Image Tagged for ECR
+![ECR Image Tag](screenshots/04-ecr-image-tag.png)
+
+### 5. Docker Image Pushed to Amazon ECR
+![ECR Image Push](screenshots/05-ecr-image-push.png)
+
+### 6. ECR Image Verified
+![ECR Image Verified](screenshots/06-ecr-image-verified.png)
+
+### 7. Jenkins Service Running
+![Jenkins Service](screenshots/07-jenkins-service-running.png)
+
+### 8. Jenkins Admin User Setup
+![Jenkins Admin](screenshots/08-jenkins-admin-user.png)
+
+### 9. Jenkins Docker Access
+![Jenkins Docker Access](screenshots/09-jenkins-docker-access.png)
+
+### 10. Jenkins GitHub SCM Configuration
+![Jenkins GitHub SCM](screenshots/10-jenkins-github-scm.png)
+
+### 11. Jenkins Pipeline Successful
+![Jenkins Pipeline](screenshots/11-jenkins-pipeline-success.png)
+
+### 12. Jenkins ECR Test Successful
+![Jenkins ECR Test](screenshots/12-jenkins-ecr-test-success.png)
+
+### 13. AWS Lambda Function Created
+![Lambda Function](screenshots/13-lambda-function-created.png)
+
+### 14. Lambda Test Successful
+![Lambda Test](screenshots/14-lambda-test-success.png)
+
+### 15. EventBridge Rule Created
+![EventBridge Rule](screenshots/15-eventbridge-rule-created.png)
+
+### 16. EventBridge Lambda Target Configured
+![EventBridge Lambda Target](screenshots/16-eventbridge-lambda-target.png)
+
+### 17. CloudWatch Logs Verified
+![CloudWatch Success](screenshots/17-cloudwatch-success.png)
