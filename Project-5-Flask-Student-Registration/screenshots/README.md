@@ -1,31 +1,31 @@
 ## Project Screenshots
 
 ### 1. Registration Form
-![Registration Form](screenshots/project%205-%20registration%20page%20running%20.png)
+![Registration Form](<screenshots/project 5- registration page running .png>)
 
 ### 2. Styled Registration Form
-![Styled Registration Form](screenshots/project%205-%20styeld-registration-form%20.png)
+![Styled Registration Form](<screenshots/project 5- styeld-registration-form .png>)
 
 ### 3. Registration Form Code
-![Registration Form Code](screenshots/project%205-registration-form-code%20.png)
+![Registration Form Code](<screenshots/project 5-registration-form-code .png>)
 
 ### 4. Flask Backend
-![Flask Backend](screenshots/project%205-%20flask%20backend%20.png)
+![Flask Backend](<screenshots/project 5- flask backend .png>)
 
 ### 5. MySQL Container
-![MySQL Container](screenshots/project%205-mysql%20container%20.png)
+![MySQL Container](<screenshots/project 5-mysql container .png>)
 
 ### 6. Database Verification
-![Database Verification](screenshots/project%205-%20database%20verification%20.png)
+![Database Verification](<screenshots/project 5- database verification .png>)
 
 ### 7. Database Records
-![Database Records](screenshots/project%205-database%20record%20.png)
+![Database Records](<screenshots/project 5-database record .png>)
 
 ### 8. Registered Students
-![Registered Students](screenshots/project%205-%20registered%20students.png)
+![Registered Students](<screenshots/project 5- registered students.png>)
 
 ### 9. Students Table
-![Students Table](screenshots/project%205-students%20tabel.png)
+![Students Table](<screenshots/project 5-students tabel.png>)
 
 ### 10. Additional Registration Form Screenshot
-![Additional Registration Form Screenshot](screenshots/project%205-registration-form-code%20.png)
+![Additional Registration Form Screenshot](<screenshots/project 5-registration-form-code .png>)
